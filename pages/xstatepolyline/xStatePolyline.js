@@ -16,61 +16,59 @@ let polyline // La polyline en cours de construction;
 
 const polylineMachine = createMachine(
     {
-        /** @xstate-layout N4IgpgJg5mDOIC5QFEAeYBOBjAllsABAAoD2ANgJ5k4B2hEhAUmAIY0C0AQiwA4AuOWH0KdkAOWQAVSQEkAdDJo4BLMgSEthAYgCyAeQCqAZWQBhADIzTAaQDaABgC6iUDxKxlOEjRchUiADYAVgBmOSCARgAmIPsQgIBOewAOEIiQgBoQCkRkiLkohKKE5OCIgBZKhKiAXxqstExcfGJyKlp6JlYObn5BYQJRCWl5AHUWZV1DE30ANWQHZyQQNw8Bb19-BAiIgHZw6NiQ8qCo8ujdgKychCjd-ZDd8qKoiKSAp-sguob0bDxCKRKNQ6AQGARmGwuLwBEIROIpLI5ONJshYFheGBFr5Vp4NsstuUQkE5AF7OTyalKsEvtdEHsAqTnkUgslUkEguUYj8QI1-i0ge1QeDIT0Yf14cMkSi+FpkDRhBgCDIAGIAXh4LFgRDIYFoBDYEGV6p4ZAArrAACJga1m1CkWh8WDY5a49Y+AmIIkkskUlLHco0oJ0267fLFIppCJBAIBeLlHl85qAtogzoQ7rQvpwwYIkbIiay-TGMyWGzGjW62gu1zuPEe0CE4mkv3+6mxYPZRDxB7MpLHe67EKJv7J1rAjpgrpQ3qwgZDRFjQtabhYADWsE1LVVGq1Or1NGQfB1FuttvtJEdzqcOLr7s2XqiIYiySicnsZyKz1ZMcDARHTQAuOQrpqKWZzpKi4FpMxYmBYVjWBWmralWNA1isd5eA2fj0l8chJH6QRDokgadjcpSkk8RT3FEAQnKEdT1CANAkAw8DLEmQGCmmU4ZjO4o5guIy3msWEPgg7BXF2EmMq2pzJEU9jRHs3xMZxAqppOIqZrOEq5lK8iKJ4qjqHwmhgCJ9bia+JKlDE9j3OUly7FEmTSYUb5EcyUQOUECTEhUAH8imE7CtOYrZvOebSoWln3p62yJHIbzFGyHyRHsuwho8+wuc8ClcncVIJoxQA */
+        /** @xstate-layout N4IgpgJg5mDOIC5QFEAeYBOBjAllsABAAoD2ANgJ5k4B2hEhAUmAIY0C0AQiwA4AuOWH0KdkAOWQAVSQEkAdDJo4BLMgSEthAYgCyAeQCqAZWQBhADIzTAaQDaABgC6iUDxKxlOEjRchUiADYAZgAOOXsARgAmAKiAVgAWCPsogE4IiIAaEApEdjCI1KL01KD7IIB2SIiQgF9a7LRMXHxicipaeiZWDm5+QWECUQlpeQB1FmVdQxN9ADVkB2ckEDcPAW9ffwR2CIqwhJCKqP2a+wC4lOzchCiQiLlioqCghKiUqPrG9Gw8QlJKNQ6AQGARmGwuLwBEIROIpLI5BMpshYFheGAlr41p5NittpcAnIQpVYiE4lETkETtdEBFXnJyQlUhVUnF9lEEhU4l8QE1fq0AR1gaDwb0oQNYSMEUi+FpkDRhBgCDIAGIAXh4LFgRDIYFoBDYEGV6p4ZAArrAACJga1m1CkWh8WCYlbYjY+PGIBL2CpyZKRNIhEKpexxUJxGm3IpyJnFSqhCJM+wJHl8lr-dpArpgnqQ-owoZw0aIyay-TGMyWGzGjW62gu1zuHEe0D42JyAL2SLBVIxS6cyOc31BS41EfHOIhCkphq8n7ptqAzog7oQvrQwbDeHjUtabhYADWsE1rVVGq1Or1NGQfB1FuttvtJEdzqcWKb7q2eW9CXCXfKgYknEqSRskhIpEyVQjl2bJ7Km85-IuQrZqKeYbpK24llM5YmBYVjWDWmranWNANqsH5eC2fh5AEqR+v+QSFMyITnCOkbsGUchVP+hQVAESTMuS9SzjQJAMPAKxpohgpZiuOZruKBZbqM77rJRX47Ak5J-l2VKpMSfHAexGS+k8+mGe8xIBPBzTSZmy4irm64SoWUryIoniqOofCaGAqnNhpU5xESsSXBUFScgExxBJGaRRAyEVFO8XKlHEiY2fyGZLsKq5ivmm5FtKpb+Z+noIBE7bcZERxhkcQSpAEkZhr+07Ml24XJBUQTCbUQA */
         id: "Exercice Polyline de Jean-Baptiste BENETTI",
         initial: "Initial state",
-    states: {
-        "Initial state": {
-            on: {
-                MOUSECLICK: {
-                  target: "Wait",
-                  actions: "createLine",
+        states: {
+            "Initial state": {
+                on: {
+                    MOUSECLICK: {
+                        target: "Wait",
+                        actions: "createLine",
+                    }
                 }
+            },
+
+            "Wait": {
+                on: {
+                    "MOUSEMOVE": {
+                        target: "Wait",
+                        cond: pasPlein,
+                        actions: "setLastPoint",
+                    },
+
+                    "Escape": {
+                        target: "Initial state",
+                        cond: plusDeDeuxPoints,
+                        actions: {
+                            type: "abandon",
+                        },
+                    },
+
+                    "Enter IF=pasPlein and IF=plusDeDeuxPoints": {
+                        target: "Initial state",
+                        actions: {
+                            type: "saveLine",
+                        },
+                    },
+
+                    "MOUSECLICK IF=plein": {
+                        target: "Initial state",
+                        actions: {
+                            type: "saveLine",
+                        },
+                    },
+
+                    "MOUSECLICK IF=pasPlein": {
+                        target: "Wait",
+                        actions: {
+                            type: "addPoint",
+                        },
+                    }
+                },
             }
         },
-
-        "Wait": {
-          on: {
-            "MOUSEMOVE": {
-              target: "Wait",
-              cond:pasPlein,
-              actions: "setLastPoint",
-            },
-            "Escape": {
-              target: "Initial state",
-              cond: plusDeDeuxPoints,
-              actions: {
-                type: "abandon",
-              },
-            },
-            "Enter IF=pasPlein and IF=plusDeDeuxPoints": {
-              target: "Initial state",
-              actions: {
-                type: "saveLine",
-              },
-            },
-            "MOUSECLICK IF=plein": {
-              target: "Initial state",
-              actions: {
-                type: "saveLine",
-              },
-            },
-            "Backspace IF=pasPleinEtPlusDeDeuxPoints": {
-              target: "Wait",
-              actions: {
-                type: "removeLastPoint",
-              },
-            },
-            "MOUSECLICK IF=pasPlein": {
-              target: "Wait",
-              actions: {
-                type: "addPoint",
-              },
-            },
-          },
-        }
     },
-},
 
     // Quelques actions et guardes que vous pouvez utiliser dans votre machine
     {
@@ -141,9 +139,9 @@ const polylineMachine = createMachine(
             },
             pasPleinEtPlusDeDeuxPoints: (context, event) => {
                 // Deux coordonnées pour chaque point, plus le point provisoire
-                if(polyline.points().length >= 6 && polyline.points().length < MAX_POINTS * 2){
+                if (polyline.points().length >= 6 && polyline.points().length < MAX_POINTS * 2) {
                     return true;
-                }else{
+                } else {
                     return false;
                 };
             },

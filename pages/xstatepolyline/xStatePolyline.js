@@ -16,14 +16,61 @@ let polyline // La polyline en cours de construction;
 
 const polylineMachine = createMachine(
     {
-        /** @xstate-layout N4IgpgJg5mDOIC5gF8A0IB2B7CdGgAcsAbATwBkBLDMfEI2SgF0qwzoA9EBaANnVI9eAOgAM4iZMkB2ZGnokK1MMMoRitJAsYs2nRABYATAMQAOAIzCD0gJwXetgwGZezgw9ty5QA */
-        id: "polyLine",
-        initial: "idle",
-        states : {
-            idle: {
-            }
-        }
+        /** @xstate-layout N4IgpgJg5mDOIC5QAUD2AbAnuglgOzAAIBhDfMAOgEk8cAXHAQ3UNjsbrAGIBZAeQCqAZQCixADJViAaQDaABgC6iUAAdUsejlR4VIAB6IAbAFYAzBRMBGAEwn5ZowE55ADjNWzAGhCZErqwobJxCnV1MrABZopxsAXzifNCxcAhIyAgoAdUZ6XkFRfgA1EQVlJBB1TQYdPUMEKysAdktbezNIkxtI2yajHz8EGyaWsybIkJsrFyNx+RMEpIxscnTUyhy8kVgAY0ZVMDK9Kq1aivrIsxMKI3k7u-do03mBxGajG4mQk1d3ExNInZFiBkis0qR1tlcnQuCI8JwAE6EKgAMQAvKpGLBkOgwPhCIw8BBkejVOgAK6wAAiYBp5P0aHwdFgRwqJxqunOiEu11u9zcHUizxMryGTUCoRCHisJiMRkckWBoPWa3IULy-GEYkkMhJGNx+FZag0p05oAuVxu-IFT3sIt8iEcoy+Lg6IyaZiVyxVELVmxhACFGDsANawTE7IiojFYnF4vAiOg4yk0ukM1BMllKY4mjl1bk2UVWVw2CjybohCY-WVCoxelKrX2Zf35LUSKTSPWY7EGvBGyq57RmgxveYUFz8kwe5xC+2DcI3cYhEY2IydcwJRIgPCoCBwPTKxsZMA56pD-MIAC0-QdV4+1ofdyi9bBRCblBoWmYrHYnFPpovEtrnCOx5BGSI+iaGxvFvYJSynL4bDAkwnCuZ8t0PcFj3VOh-zzLkGmcChplCX5ZmsZomlFMYWigiZXCcQFhkeRVNyAA */
+        id: "Polyline Coline",
+        initial: "Initial state",
+    states: {
+      "Initial state": {
+        on: {
+          MOUSECLICK: {
+            target: "Wait",
+            actions: "createLine",
+          },
+        },
+      },
+      "Wait": {
+        on: {
+          "MOUSEMOVE": {
+            target: "Wait",
+            cond:pasPlein,
+            actions: "setLastPoint",
+          },
+          "Escape": {
+            target: "Initial state",
+            cond: plusDeDeuxPoints,
+            actions: {
+              type: "abandon",
+            },
+          },
+          "Enter IF=pasPlein and IF=plusDeDeuxPoints": {
+            target: "Initial state",
+            actions: {
+              type: "saveLine",
+            },
+          },
+          "MOUSECLICK IF=plein": {
+            target: "Initial state",
+            actions: {
+              type: "saveLine",
+            },
+          },
+          "Backspace IF=pasPleinEtPlusDeDeuxPoints": {
+            target: "Wait",
+            actions: {
+              type: "removeLastPoint",
+            },
+          },
+          "MOUSECLICK IF=pasPlein": {
+            target: "Wait",
+            actions: {
+              type: "addPoint",
+            },
+          },
+        },
+      },
     },
+},
+
     // Quelques actions et guardes que vous pouvez utiliser dans votre machine
     {
         actions: {
@@ -83,10 +130,21 @@ const polylineMachine = createMachine(
             pasPlein: (context, event) => {
                 return polyline.points().length < MAX_POINTS * 2;
             },
+            plein: (context, event) => {
+                return polyline.points().length >= MAX_POINTS * 2;
+            },
             // On peut enlever un point
             plusDeDeuxPoints: (context, event) => {
                 // Deux coordonnées pour chaque point, plus le point provisoire
-                return polyline.points().length > 6;
+                return polyline.points().length >= 6;
+            },
+            pasPleinEtPlusDeDeuxPoints: (context, event) => {
+                // Deux coordonnées pour chaque point, plus le point provisoire
+                if(polyline.points().length >= 6 && polyline.points().length < MAX_POINTS * 2){
+                    return true;
+                }else{
+                    return false;
+                };
             },
         },
     }

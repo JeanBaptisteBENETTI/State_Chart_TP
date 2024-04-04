@@ -16,58 +16,59 @@ let polyline // La polyline en cours de construction;
 
 const polylineMachine = createMachine(
     {
-        /** @xstate-layout N4IgpgJg5mDOIC5QAUD2AbAnuglgOzAAIBhDfMAOgEk8cAXHAQ3UNjsbrAGIBZAeQCqAZQCixADJViAaQDaABgC6iUAAdUsejlR4VIAB6IAbAFYAzBRMBGAEwn5ZowE55ADjNWzAGhCZErqwobJxCnV1MrABZopxsAXzifNCxcAhIyAgoAdUZ6XkFRfgA1EQVlJBB1TQYdPUMEKysAdktbezNIkxtI2yajHz8EGyaWsybIkJsrFyNx+RMEpIxscnTUyhy8kVgAY0ZVMDK9Kq1aivrIsxMKI3k7u-do03mBxGajG4mQk1d3ExNInZFiBkis0qR1tlcnQuCI8JwAE6EKgAMQAvKpGLBkOgwPhCIw8BBkejVOgAK6wAAiYBp5P0aHwdFgRwqJxqunOiEu11u9zcHUizxMryGTUCoRCHisJiMRkckWBoPWa3IULy-GEYkkMhJGNx+FZag0p05oAuVxu-IFT3sIt8iEcoy+Lg6IyaZiVyxVELVmxhACFGDsANawTE7IiojFYnF4vAiOg4yk0ukM1BMllKY4mjl1bk2UVWVw2CjybohCY-WVCoxelKrX2Zf35LUSKTSPWY7EGvBGyq57RmgxveYUFz8kwe5xC+2DcI3cYhEY2IydcwJRIgPCoCBwPTKxsZMA56pD-MIAC0-QdV4+1ofdyi9bBRCblBoWmYrHYnFPpovEtrnCOx5BGSI+iaGxvFvYJSynL4bDAkwnCuZ8t0PcFj3VOh-zzLkGmcChplCX5ZmsZomlFMYWigiZXCcQFhkeRVNyAA */
-        id: "Polyline Coline",
+        /** @xstate-layout N4IgpgJg5mDOIC5QFEAeYBOBjAllsABAAoD2ANgJ5k4B2hEhAUmAIY0C0AQiwA4AuOWH0KdkAOWQAVSQEkAdDJo4BLMgSEthAYgCyAeQCqAZWQBhADIzTAaQDaABgC6iUDxKxlOEjRchUiADYAVgBmOSCARgAmIPsQgIBOewAOEIiQgBoQCkRkiLkohKKE5OCIgBZKhKiAXxqstExcfGJyKlp6JlYObn5BYQJRCWl5AHUWZV1DE30ANWQHZyQQNw8Bb19-BAiIgHZw6NiQ8qCo8ujdgKychCjd-ZDd8qKoiKSAp-sguob0bDxCKRKNQ6AQGARmGwuLwBEIROIpLI5ONJshYFheGBFr5Vp4NsstuUQkE5AF7OTyalKsEvtdEHsAqTnkUgslUkEguUYj8QI1-i0ge1QeDIT0Yf14cMkSi+FpkDRhBgCDIAGIAXh4LFgRDIYFoBDYEGV6p4ZAArrAACJga1m1CkWh8WDY5a49Y+AmIIkkskUlLHco0oJ0267fLFIppCJBAIBeLlHl85qAtogzoQ7rQvpwwYIkbIiay-TGMyWGzGjW62gu1zuPEe0CE4mkv3+6mxYPZRDxB7MpLHe67EKJv7J1rAjpgrpQ3qwgZDRFjQtabhYADWsE1LVVGq1Or1NGQfB1FuttvtJEdzqcOLr7s2XqiIYiySicnsZyKz1ZMcDARHTQAuOQrpqKWZzpKi4FpMxYmBYVjWBWmralWNA1isd5eA2fj0l8chJH6QRDokgadjcpSkk8RT3FEAQnKEdT1CANAkAw8DLEmQGCmmU4ZjO4o5guIy3msWEPgg7BXF2EmMq2pzJEU9jRHs3xMZxAqppOIqZrOEq5lK8iKJ4qjqHwmhgCJ9bia+JKlDE9j3OUly7FEmTSYUb5EcyUQOUECTEhUAH8imE7CtOYrZvOebSoWln3p62yJHIbzFGyHyRHsuwho8+wuc8ClcncVIJoxQA */
+        id: "Exercice Polyline de Jean-Baptiste BENETTI",
         initial: "Initial state",
     states: {
-      "Initial state": {
-        on: {
-          MOUSECLICK: {
-            target: "Wait",
-            actions: "createLine",
-          },
+        "Initial state": {
+            on: {
+                MOUSECLICK: {
+                  target: "Wait",
+                  actions: "createLine",
+                }
+            }
         },
-      },
-      "Wait": {
-        on: {
-          "MOUSEMOVE": {
-            target: "Wait",
-            cond:pasPlein,
-            actions: "setLastPoint",
-          },
-          "Escape": {
-            target: "Initial state",
-            cond: plusDeDeuxPoints,
-            actions: {
-              type: "abandon",
+
+        "Wait": {
+          on: {
+            "MOUSEMOVE": {
+              target: "Wait",
+              cond:pasPlein,
+              actions: "setLastPoint",
+            },
+            "Escape": {
+              target: "Initial state",
+              cond: plusDeDeuxPoints,
+              actions: {
+                type: "abandon",
+              },
+            },
+            "Enter IF=pasPlein and IF=plusDeDeuxPoints": {
+              target: "Initial state",
+              actions: {
+                type: "saveLine",
+              },
+            },
+            "MOUSECLICK IF=plein": {
+              target: "Initial state",
+              actions: {
+                type: "saveLine",
+              },
+            },
+            "Backspace IF=pasPleinEtPlusDeDeuxPoints": {
+              target: "Wait",
+              actions: {
+                type: "removeLastPoint",
+              },
+            },
+            "MOUSECLICK IF=pasPlein": {
+              target: "Wait",
+              actions: {
+                type: "addPoint",
+              },
             },
           },
-          "Enter IF=pasPlein and IF=plusDeDeuxPoints": {
-            target: "Initial state",
-            actions: {
-              type: "saveLine",
-            },
-          },
-          "MOUSECLICK IF=plein": {
-            target: "Initial state",
-            actions: {
-              type: "saveLine",
-            },
-          },
-          "Backspace IF=pasPleinEtPlusDeDeuxPoints": {
-            target: "Wait",
-            actions: {
-              type: "removeLastPoint",
-            },
-          },
-          "MOUSECLICK IF=pasPlein": {
-            target: "Wait",
-            actions: {
-              type: "addPoint",
-            },
-          },
-        },
-      },
+        }
     },
 },
 
